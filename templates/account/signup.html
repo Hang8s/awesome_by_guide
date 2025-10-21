@@ -28,6 +28,7 @@
             {% slot actions %}
                 {% element button tags="prominent,signup" type="submit" %}
                     {% trans "Sign Up" %}
+                    <input type="hidden" name = "{{ redirect_field_name }}" value="{% url 'profile-onboarding' %}">
                 {% endelement %}
             {% endslot %}
         {% endelement %}
