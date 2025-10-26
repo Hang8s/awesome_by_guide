@@ -38,6 +38,8 @@ urlpatterns = [
     path('commentsent/<pk>',coment_sent,name='comment-sent'),
     path('comment/delete/<pk>',comment_delete_view,name='comment-delete'),
     path('reply-send/<pk>', reply_send, name='reply-send'),
+    path('reply/delete/<pk>',reply_delete_view,name='reply-delete'),
+
     
 ]
 
