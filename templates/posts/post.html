@@ -39,21 +39,12 @@
                 {% endif %}
             </a>
             <div class="flex items-center gap-4 [&>a:hover]:underline">
-                <div class="flex items-center gap-1">
-                    {% if user in post.likes.all %}
-                        <img class="w-5 -mt-1" src="{% static 'images/fireheart_red.svg' %}">
-                    
-                    {% else %}
-                        <img class="w-5 -mt-1" src="{% static 'images/fireheart.svg' %}">
-                    {% endif %}
-                    {{ post.likes.count }}
-                </div>
-                {% if user.is_authenticated and user != post.author %}
-                <a href="{% url 'like-post'  post.id %}">Like</a>
-                {% endif %}
+
+                {% include 'snippets/likes.html' %}
+
                 {% if user.is_authenticated and user == post.author %}
-                <a href="{% url 'post-edit' post.id %}">Edit</a>
-                <a href="{% url 'post-delete' post.id %}">Delete</a>
+                    <a href="{% url 'post-edit' post.id %}">Edit</a>
+                    <a href="{% url 'post-delete' post.id %}">Delete</a>
                 {% endif %}
             </div>
         </div>
