@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Count
 from .forms import *
 from bs4 import BeautifulSoup
 import requests
@@ -91,6 +92,13 @@ def post_page_view(request,pk):
     commentform = CommentCreateForm()
     replyform = ReplyCreateForm()
     
+    if request.htmx:
+        if 'top' in request.GET:
+            comments = post.comments.annotate(num_likes=Count('likes')).order_by('-num_likes', '-created').distinct()
+        else:
+            comments = post.comments.all()
+        return render(request,'snippets./loop_postpage_comments.html',{'comments':comments,'replyform':replyform})
+    
     context = {
         'post':post,
         'commentform': commentform,
@@ -102,6 +110,8 @@ def post_page_view(request,pk):
 @login_required 
 def comment_sent(request, pk):
     post = get_object_or_404(Post, id=pk)
+    reply_form = ReplyCreateForm()
+    
     
     if request.method == 'POST':
         form =  CommentCreateForm(request.POST)
@@ -111,7 +121,14 @@ def comment_sent(request, pk):
             comment.parent_post = post
             comment.save()
             
-    return render(request,'snippets/add_comment.html',{'comment':comment,'post':post})
+                   
+    context={
+        'comment':comment,
+        'post':post,
+        'replyform':reply_form
+    }
+            
+    return render(request,'snippets/add_comment.html',context)
     
 @login_required
 def comment_delete_view(request,pk):
